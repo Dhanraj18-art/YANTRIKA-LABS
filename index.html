@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yantrika Labs | Hardware Engineering Studio & Project Studio</title>
+  <meta name="description"
+    content="Bring your VLSI, FPGA, IoT, and Embedded project ideas to life. From Idea to Silicon - Real Hardware, Expert Mentoring, and Complete Engineering Support.">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="cyber-theme">
+  <!-- Silicon Circuit Canvas -->
+  <canvas id="circuitCanvas" class="bg-circuit-canvas"></canvas>
+
+  <div class="app-layout">
+    <!-- Top Bar with Customer/Founder View Switcher -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="logo-mark" id="brandLogoBtn" title="Click to view Studio Posters">
+          <svg class="mandala-chip-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="22" y="22" width="56" height="56" rx="10" stroke="url(#goldGrad)" stroke-width="2.8"
+              fill="#07111e" />
+            <rect x="34" y="34" width="32" height="32" rx="6" stroke="#00f0ff" stroke-width="2" fill="#0b1b33" />
+            <path d="M42 41 L50 51 L58 41 M50 51 V62" stroke="#ffb703" stroke-width="3" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <circle cx="50" cy="50" r="14" stroke="#00f0ff" stroke-width="1.2" stroke-dasharray="3 3" />
+            <path d="M10 32 H22 M10 44 H22 M10 56 H22 M10 68 H22" stroke="#f5a623" stroke-width="2"
+              stroke-linecap="round" />
+            <path d="M78 32 H90 M78 44 H90 M78 56 H90 M78 68 H90" stroke="#f5a623" stroke-width="2"
+              stroke-linecap="round" />
+            <path d="M32 10 V22 M44 10 V22 M56 10 V22 M68 10 V22" stroke="#00f0ff" stroke-width="2"
+              stroke-linecap="round" />
+            <path d="M32 78 V90 M44 78 V90 M56 78 V90 M68 78 V90" stroke="#00f0ff" stroke-width="2"
+              stroke-linecap="round" />
+            <defs>
+              <linearGradient id="goldGrad" x1="0" y1="0" x2="100" y2="100">
+                <stop offset="0%" stop-color="#ffe259" />
+                <stop offset="100%" stop-color="#ffa751" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title">
+            <span class="brand-yantrika">YANTRIKA</span>
+            <span class="brand-labs">LABS</span>
+          </div>
+          <div class="brand-sub">
+            From Idea to Silicon · <span class="text-cyan">Engineering Ideas Into Hardware</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- App Mode Switcher (Customer Attraction View vs Founder Business CRM) -->
+      <div class="mode-switcher-container">
+        <button class="mode-switch-btn active" id="btnModeCustomer" data-mode="customer">
+          <span class="mode-icon">🚀</span>
+          <span class="mode-label">Client Portal <span class="mode-tag gold">Attract Customers</span></span>
+        </button>
+        <button class="mode-switch-btn" id="btnModeFounder" data-mode="founder">
+          <span class="mode-icon">📊</span>
+          <span class="mode-label">Founder CRM <span class="mode-badge" id="crmLeadsBadge">3 Leads</span></span>
+        </button>
+      </div>
+
+      <!-- Top Action Controls -->
+      <div class="header-actions">
+        <button class="btn btn-outline btn-sm" id="btnSoundToggle" title="Audio Feedback">
+          <span class="icon">🔊</span> Audio: ON
+        </button>
+        <button class="btn btn-outline btn-sm" id="btnViewPosters">
+          <span class="icon">🖼️</span> Posters
+        </button>
+        <button class="btn btn-gold btn-sm" id="btnCustomerBookCTA">
+          <span class="icon">⚡</span> Build My Project
+        </button>
+      </div>
+    </header>
+
+    <!-- Subheader Alert / Broadcast Marquee -->
+    <div class="lab-broadcast-bar">
+      <div class="broadcast-label">
+        <span class="broadcast-icon">🔥</span> SPECIAL OFFER:
+      </div>
+      <div class="broadcast-marquee-container">
+        <div class="broadcast-track">
+          <span>● Have a Final Year or Capstone Project Idea? Bring it to Yantrika Labs · Complete RTL, FPGA, PCB, and
+            IEEE Documentation Support!</span>
+          <span>● Free Project Architecture & Feasibility Consultation for Students & Innovators!</span>
+          <span>● 100% Real Hardware Implementation: Xilinx Vivado, Basys 3 FPGA, ESP32, and Custom Fabricated
+            PCBs.</span>
+          <span>● Ancient Ingenuity, Modern Silicon · Build Skills, Viva Confidence, and Placement-Ready
+            Portfolios!</span>
+        </div>
+      </div>
+      <div class="clock-display" id="systemClock">00:00:00 IST</div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- VIEW CONTAINER 1: CUSTOMER ATTRACTION & SALES PORTAL           -->
+    <!-- (The view you show students/clients to win projects & contracts) -->
+    <!-- ============================================================== -->
+    <div class="view-wrapper active" id="viewCustomer">
+      <!-- Hero Section -->
+      <section class="customer-hero">
+        <div class="hero-content">
+          <div class="hero-tag">
+            <span class="pulse-dot cyan"></span> YOUR IDEAS. OUR ENGINEERING. REAL HARDWARE.
+          </div>
+          <h1 class="hero-title">
+            Transform Your Project Idea <br>
+            <span class="gradient-text-gold">Into Working Silicon & Real Hardware</span>
+          </h1>
+          <p class="hero-desc">
+            Struggling with complex <strong>VLSI, FPGA (Vivado/Quartus), RISC-V, Embedded, or IoT</strong> projects?
+            At <strong>Yantrika Labs</strong>, we don't just give you generic code — we engineer your custom project
+            from architecture design to silicon synthesis, working hardware bring-up, and complete viva-ready
+            documentation!
+          </p>
+
+          <div class="hero-actions">
+            <button class="btn btn-gold btn-lg" id="btnHeroCalculateQuote">
+              <span class="icon">⚡</span> Estimate Your Project Cost & Timeline
+            </button>
+            <button class="btn btn-outline btn-lg" id="btnHeroSubmitIdea">
+              <span class="icon">💡</span> Submit Your Project Idea
+            </button>
+            <a href="https://wa.me/916360720262?text=Hi%20Yantrika%20Labs,%20I%20have%20a%20project%20idea%20and%20want%20to%20know%20pricing%20and%20details."
+              target="_blank" class="btn btn-whatsapp btn-lg">
+              <span class="icon">💬</span> Chat on WhatsApp
+            </a>
+          </div>
+
+          <!-- Trust Badges -->
+          <div class="hero-trust-strip">
+            <div class="trust-item"><span>✅</span> 100% Real Working Hardware</div>
+            <div class="trust-item"><span>✅</span> Complete RTL & Vivado Synthesis</div>
+            <div class="trust-item"><span>✅</span> IEEE Paper & Viva Preparation</div>
+            <div class="trust-item"><span>✅</span> Direct 1-on-1 Mentor Guidance</div>
+          </div>
+        </div>
+
+        <!-- Hero Interactive Preview Card -->
+        <div class="hero-visual-card">
+          <div class="hvc-header">
+            <span class="hvc-title">⚡ REAL HARDWARE DEMO RIG</span>
+            <span class="live-pill"><span class="pulse-dot"></span> LIVE BENCH</span>
+          </div>
+          <div class="hvc-body">
+            <div class="hvc-project-title">VIDYUT RAKSHAKA</div>
+            <div class="hvc-project-sub">IoT-Based Intelligent Grid Line Protection with ML Fault Classification</div>
+            <div class="hvc-spec-tags">
+              <span class="tech-tag">ESP32</span>
+              <span class="tech-tag">ACS712 Current Sensing</span>
+              <span class="tech-tag">Random Forest AI</span>
+              <span class="tech-tag">&lt; 5ms Relay Trip</span>
+            </div>
+            <!-- Mini Scope Screen -->
+            <div class="hero-scope-box">
+              <canvas id="heroScopeCanvas" width="420" height="120"></canvas>
+            </div>
+            <div class="hvc-stats-row">
+              <div><span class="lbl">Grid Voltage:</span> <strong class="text-cyan">230.4 V</strong></div>
+              <div><span class="lbl">Trip Latency:</span> <strong class="text-emerald">4.18 ms</strong></div>
+              <div><span class="lbl">Hardware:</span> <strong class="text-gold">Tested & Verified</strong></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 Pillars Section (From Poster 2) -->
+      <section class="pillars-section">
+        <div class="section-heading-center">
+          <h2 class="section-title">WHY STUDENTS & INNOVATORS TRUST YANTRIKA LABS</h2>
+          <p class="section-subtitle">We bridge the gap between academic theory and industry silicon engineering</p>
+        </div>
+        <div class="pillars-4-grid">
+          <div class="pillar-box">
+            <div class="p-icon">👥</div>
+            <h3 class="p-title">CUSTOM PROJECT SUPPORT</h3>
+            <p class="p-desc">Have a unique idea or a complex problem statement? Bring your idea to us and get
+              step-by-step guidance from senior engineers.</p>
+          </div>
+          <div class="pillar-box">
+            <div class="p-icon">📑</div>
+            <h3 class="p-title">COMPLETE DEVELOPMENT</h3>
+            <p class="p-desc">From initial mathematical modeling & architecture specs to RTL coding, FPGA synthesis,
+              custom PCB design, and live hardware delivery.</p>
+          </div>
+          <div class="pillar-box">
+            <div class="p-icon">🎓</div>
+            <h3 class="p-title">LEARN & BUILD</h3>
+            <p class="p-desc">You don't just get a black-box deliverable. We conduct thorough mentoring sessions so you
+              understand every line of Verilog and circuit trace.</p>
+          </div>
+          <div class="pillar-box">
+            <div class="p-icon">🚀</div>
+            <h3 class="p-title">ACADEMIC & PLACEMENT READY</h3>
+            <p class="p-desc">Elevate your resume with real hardware projects. We prepare you with defense
+              presentations, IEEE documentation, and viva prep.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive Project Cost & Feasibility Calculator (Major Lead Generator) -->
+      <section class="calculator-section" id="projectCalculatorSection">
+        <div class="calc-card">
+          <div class="calc-header">
+            <div>
+              <span class="calc-badge">⚡ INSTANT QUOTE GENERATOR</span>
+              <h2 class="calc-title">Configure Your Dream Project & Get an Instant Estimate</h2>
+              <p class="calc-desc">Select your discipline, hardware requirements, and deliverable package to see
+                estimated cost and timeline.</p>
+            </div>
+            <div class="calc-callout">
+              <span class="callout-tag">Student Friendly Pricing</span>
+              <span class="callout-sub">Milestone-based payment options available</span>
+            </div>
+          </div>
+
+          <div class="calc-body-grid">
+            <!-- Left: Options Selection -->
+            <div class="calc-options-col">
+              <div class="form-group">
+                <label class="form-label">1. Select Your Engineering Discipline:</label>
+                <div class="domain-radio-grid" id="calcDomainGroup">
+                  <label class="domain-radio-item active" data-domain="VLSI" data-base="14000">
+                    <input type="radio" name="calcDomain" value="VLSI" checked>
+                    <span class="dri-icon">🔲</span>
+                    <span class="dri-name">Digital VLSI / RTL</span>
+                    <span class="dri-sub">Verilog HDL, Testbenches, Simulation</span>
+                  </label>
+                  <label class="domain-radio-item" data-domain="FPGA" data-base="18000">
+                    <input type="radio" name="calcDomain" value="FPGA">
+                    <span class="dri-icon">⚡</span>
+                    <span class="dri-name">FPGA Implementation</span>
+                    <span class="dri-sub">Vivado / Quartus, Basys 3, Bitstreams</span>
+                  </label>
+                  <label class="domain-radio-item" data-domain="RISCV" data-base="22000">
+                    <input type="radio" name="calcDomain" value="RISCV">
+                    <span class="dri-icon">⚙️</span>
+                    <span class="dri-name">RISC-V Processor Design</span>
+                    <span class="dri-sub">Custom Datapath, Pipelining, ISA</span>
+                  </label>
+                  <label class="domain-radio-item" data-domain="IoT" data-base="12000">
+                    <input type="radio" name="calcDomain" value="IoT">
+                    <span class="dri-icon">📡</span>
+                    <span class="dri-name">IoT & Smart Systems</span>
+                    <span class="dri-sub">ESP32, Sensors, Cloud Dashboard</span>
+                  </label>
+                  <label class="domain-radio-item" data-domain="Security" data-base="19000">
+                    <input type="radio" name="calcDomain" value="Security">
+                    <span class="dri-icon">🛡️</span>
+                    <span class="dri-name">Hardware Security / PUF</span>
+                    <span class="dri-sub">Physical Unclonable Functions, Crypto</span>
+                  </label>
+                  <label class="domain-radio-item" data-domain="Embedded" data-base="13000">
+                    <input type="radio" name="calcDomain" value="Embedded">
+                    <span class="dri-icon">🎛️</span>
+                    <span class="dri-name">Embedded Hardware & PCB</span>
+                    <span class="dri-sub">Microcontrollers, Custom Schematic</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-top: 18px;">
+                <label class="form-label">2. Hardware Kit Inclusions:</label>
+                <div class="checkbox-grid">
+                  <label class="cyber-checkbox">
+                    <input type="checkbox" id="userKitFpga" value="9500" checked>
+                    <span class="box-custom"></span>
+                    <span>FPGA Development Board (Basys 3 / Artix-7 or Cyclone IV) (+₹9,500)</span>
+                  </label>
+                  <label class="cyber-checkbox">
+                    <input type="checkbox" id="userKitSensors" value="2000" checked>
+                    <span class="box-custom"></span>
+                    <span>Microcontroller & Sensor Shield (ESP32/STM32 + Relays/Sensors) (+₹2,000)</span>
+                  </label>
+                  <label class="cyber-checkbox">
+                    <input type="checkbox" id="userKitPcb" value="3500">
+                    <span class="box-custom"></span>
+                    <span>Custom Fabricated 2-Layer PCB + 3D Enclosure (+₹3,500)</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-top: 18px;">
+                <label class="form-label">3. Deliverable & Mentorship Tier:</label>
+                <div class="tier-select-grid">
+                  <label class="tier-card active" data-tier="Standard" data-mult="1.0">
+                    <input type="radio" name="calcTier" value="Standard" checked>
+                    <span class="tc-name">Standard Capstone</span>
+                    <span class="tc-desc">Full code, testbench, synthesis & viva Q&A guidance</span>
+                  </label>
+                  <label class="tier-card" data-tier="FastTrack" data-mult="1.25">
+                    <input type="radio" name="calcTier" value="FastTrack">
+                    <span class="tc-name">Fast-Track Delivery</span>
+                    <span class="tc-desc">Urgent priority delivery (10-14 days) + direct calls</span>
+                  </label>
+                  <label class="tier-card" data-tier="Research" data-mult="1.5">
+                    <input type="radio" name="calcTier" value="Research">
+                    <span class="tc-name">IEEE Research Ready</span>
+                    <span class="tc-desc">Full paper draft formatted for IEEE/Scopus conferences</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Instant Estimate Breakdown & Lead Capture Form -->
+            <div class="calc-result-col">
+              <div class="result-receipt-box">
+                <div class="receipt-header">
+                  <span class="rc-title">ESTIMATED INVESTMENT</span>
+                  <span class="rc-tag">Yantrika Student Offer</span>
+                </div>
+                <div class="price-hero-row">
+                  <span class="currency">₹</span>
+                  <span class="amount" id="calcFinalAmount">25,500</span>
+                  <span class="all-inc">All-Inclusive</span>
+                </div>
+                <div class="receipt-breakdown">
+                  <div class="rb-row"><span>Engineering & RTL Architecture:</span> <strong id="rbEng">₹14,000</strong>
+                  </div>
+                  <div class="rb-row"><span>Hardware & Dev Board Kit:</span> <strong id="rbHw">₹11,500</strong></div>
+                  <div class="rb-row"><span>Mentoring, Viva & Documentation:</span> <strong
+                      class="text-emerald">INCLUDED</strong></div>
+                  <div class="rb-row"><span>Estimated Timeframe:</span> <strong class="text-cyan" id="rbTime">3 - 4
+                      Weeks</strong></div>
+                </div>
+
+                <!-- Fast Lead Form (Directly Captures Customer) -->
+                <div class="lead-quick-form">
+                  <h4 class="lq-heading">Lock In Your Project Slot:</h4>
+                  <input type="text" id="custLeadName" class="input-cyber w-100" placeholder="Your Name / Team Lead"
+                    required>
+                  <input type="text" id="custLeadContact" class="input-cyber w-100"
+                    placeholder="WhatsApp Number or Email" required>
+                  <input type="text" id="custLeadCollege" class="input-cyber w-100"
+                    placeholder="College / Organization Name">
+                  <button type="button" class="btn btn-gold w-100" id="btnSubmitLeadForm">
+                    <span class="icon">🚀</span> Lock This Estimate & Book Free Call
+                  </button>
+                  <p class="lq-note">🔒 Zero upfront payment needed. We will discuss your project specs and finalize
+                    requirements first.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Proof of Work: Our 6 Flagship In-House Projects Showcase -->
+      <section class="proof-of-work-section">
+        <div class="section-heading-center">
+          <div class="section-badge">PROOF OF OUR WORK</div>
+          <h2 class="section-title">SELECTED IN-HOUSE ENGINEERING PROJECTS</h2>
+          <p class="section-subtitle">Real Working Silicon, RTL Bus Protocols, Embedded Systems & IoT Created By
+            Yantrika Labs</p>
+        </div>
+
+        <div class="showcase-cards-grid" id="customerProjectShowcase">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- 11 Services Grid (From Poster 2) -->
+      <section class="services-overview-section">
+        <div class="section-heading-center">
+          <h2 class="section-title">OUR 11 END-TO-END SERVICES</h2>
+          <p class="section-subtitle">Everything you need to complete, defend, and publish your engineering project</p>
+        </div>
+        <div class="services-11-grid" id="customerServicesGrid">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- 9 Project Areas (From Poster 2) -->
+      <section class="areas-section">
+        <div class="section-heading-center">
+          <h2 class="section-title">PROJECT AREAS WE SPECIALIZE IN</h2>
+          <p class="section-subtitle">From Digital VLSI to RISC-V and Hardware Security</p>
+        </div>
+        <div class="areas-badge-grid">
+          <div class="area-card"><span class="area-icon">🔲</span><span class="area-title">Digital VLSI</span><span
+              class="area-sub">RTL, FSM & Synthesis</span></div>
+          <div class="area-card"><span class="area-icon">⚡</span><span class="area-title">FPGA</span><span
+              class="area-sub">Xilinx Vivado & Quartus</span></div>
+          <div class="area-card"><span class="area-icon">🏛️</span><span class="area-title">SoC Design</span><span
+              class="area-sub">Bus Protocols & Interconnect</span></div>
+          <div class="area-card"><span class="area-icon">💎</span><span class="area-title">ASIC Concepts</span><span
+              class="area-sub">Standard Cells & Floorplan</span></div>
+          <div class="area-card"><span class="area-icon">⚙️</span><span class="area-title">RISC-V</span><span
+              class="area-sub">Pipelined Custom Processors</span></div>
+          <div class="area-card"><span class="area-icon">🛡️</span><span class="area-title">Hardware
+              Security</span><span class="area-sub">PUF, Cryptography & Security</span></div>
+          <div class="area-card"><span class="area-icon">📈</span><span class="area-title">DSP</span><span
+              class="area-sub">Digital Signal Processing</span></div>
+          <div class="area-card"><span class="area-icon">📡</span><span class="area-title">Communication
+              Protocols</span><span class="area-sub">SPI, I2C, UART, AXI, AHB</span></div>
+          <div class="area-card"><span class="area-icon">🎛️</span><span class="area-title">Embedded
+              Hardware</span><span class="area-sub">ESP32, ARM, Custom PCBs</span></div>
+        </div>
+      </section>
+
+      <!-- Ancient Ingenuity Banner -->
+      <section class="quote-cta-banner">
+        <div class="qcb-content">
+          <h3 class="qcb-quote">"Ancient Ingenuity, Modern Silicon."</h3>
+          <p class="qcb-sub">Have a project idea? Bring the idea. Let's engineer it together.</p>
+          <div class="qcb-actions">
+            <button class="btn btn-gold btn-lg"
+              onclick="document.getElementById('projectCalculatorSection').scrollIntoView({ behavior: 'smooth' })">
+              🚀 Start Your Project Now
+            </button>
+            <a href="https://wa.me/916360720262?text=Hi%20Yantrika%20Labs,%20I%20want%20to%20discuss%20my%20engineering%20project%20requirements."
+              target="_blank" class="btn btn-whatsapp btn-lg">
+              💬 Direct WhatsApp Message
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- VIEW CONTAINER 2: FOUNDER BUSINESS & LEAD MONITORING CRM       -->
+    <!-- (Your private cockpit to monitor revenue from ₹0 to success)  -->
+    <!-- ============================================================== -->
+    <div class="view-wrapper" id="viewFounder">
+      <!-- Founder KPI Strip -->
+      <section class="kpi-grid">
+        <!-- KPI 1: Realized Revenue -->
+        <div class="kpi-card" data-domain="business">
+          <div class="kpi-card-header">
+            <span class="kpi-title">TOTAL REVENUE EARNED</span>
+            <span class="kpi-icon-pill gold">₹ CASHFLOW</span>
+          </div>
+          <div class="kpi-card-body">
+            <div class="kpi-value text-gold" id="founderRevenueVal">₹0</div>
+            <div class="kpi-trend positive" id="founderRevenueTrend">
+              <span class="trend-arrow">🎯</span> Target: ₹1,00,000 Milestone
+            </div>
+          </div>
+          <div class="kpi-footer">
+            <div class="progress-bar-micro">
+              <div class="progress-fill cyan" id="founderRevProgress" style="width: 0%;"></div>
+            </div>
+            <span class="progress-label-micro" id="founderRevLabel">0% of ₹1.0L Monthly Goal Reached</span>
+          </div>
+          <div class="kpi-glow gold"></div>
+        </div>
+
+        <!-- KPI 2: Active Leads / Customer Inquiries -->
+        <div class="kpi-card" data-domain="engineering">
+          <div class="kpi-card-header">
+            <span class="kpi-title">CUSTOMER INQUIRIES & LEADS</span>
+            <span class="kpi-icon-pill cyan">👥 CLIENTS</span>
+          </div>
+          <div class="kpi-card-body">
+            <div class="kpi-value" id="founderLeadsCount">3 <span class="val-sub">Inquiries</span></div>
+            <div class="kpi-trend positive">
+              <span class="trend-arrow">▲</span> Ready to follow up & close!
+            </div>
+          </div>
+          <div class="kpi-footer">
+            <div class="micro-stat"><span>Pipeline Value:</span> <strong class="text-cyan"
+                id="founderPipelineVal">₹76,500</strong></div>
+            <div class="micro-stat"><span>Conversion:</span> <strong>Pending Calls</strong></div>
+          </div>
+          <div class="kpi-glow cyan"></div>
+        </div>
+
+        <!-- KPI 3: In-House Projects Showcase -->
+        <div class="kpi-card" data-domain="hardware">
+          <div class="kpi-card-header">
+            <span class="kpi-title">IN-HOUSE PROOF-OF-WORK IP</span>
+            <span class="kpi-icon-pill emerald">💎 PORTFOLIO</span>
+          </div>
+          <div class="kpi-card-body">
+            <div class="kpi-value text-emerald">6 <span class="val-sub">Flagships</span></div>
+            <div class="kpi-trend positive">
+              <span class="trend-arrow">●</span> Ready to show to clients
+            </div>
+          </div>
+          <div class="kpi-footer">
+            <div class="micro-stat"><span>Vidyut Rakshaka:</span> <strong class="text-emerald">Ready</strong></div>
+            <div class="micro-stat"><span>RISC-V Core:</span> <strong>Synthesized</strong></div>
+          </div>
+          <div class="kpi-glow emerald"></div>
+        </div>
+
+        <!-- KPI 4: Studio Conversion Speed -->
+        <div class="kpi-card" data-domain="services">
+          <div class="kpi-card-header">
+            <span class="kpi-title">STUDIO READINESS</span>
+            <span class="kpi-icon-pill purple">⚡ STATUS</span>
+          </div>
+          <div class="kpi-card-body">
+            <div class="kpi-value text-cyan">100% <span class="val-sub">Active</span></div>
+            <div class="kpi-trend positive">
+              <span class="trend-arrow">▲</span> 11 Services Operational
+            </div>
+          </div>
+          <div class="kpi-footer">
+            <div class="micro-stat"><span>Toolchains:</span> <strong>Vivado + Quartus</strong></div>
+            <div class="micro-stat"><span>Pricing:</span> <strong>Configured</strong></div>
+          </div>
+          <div class="kpi-glow purple"></div>
+        </div>
+      </section>
+
+      <!-- Founder Leads CRM Table -->
+      <section class="dash-card" style="margin-bottom: 24px;">
+        <div class="dash-card-header">
+          <div class="card-title-group">
+            <span class="card-icon">🎯</span>
+            <div>
+              <h3 class="card-title">Customer Inquiries & Deal Pipeline CRM</h3>
+              <p class="card-subtitle">Manage student & client leads, update deal stages, log payments, and copy quick
+                WhatsApp pitch responses</p>
+            </div>
+          </div>
+          <div class="card-controls">
+            <button class="btn btn-gold btn-sm" id="btnManualAddLead">+ Add Lead Manually</button>
+          </div>
+        </div>
+
+        <div class="dash-card-body no-pad">
+          <div class="table-responsive">
+            <table class="cyber-table" id="crmTable">
+              <thead>
+                <tr>
+                  <th>DATE</th>
+                  <th>CLIENT / STUDENT</th>
+                  <th>CONTACT</th>
+                  <th>DISCIPLINE & PROJECT IDEA</th>
+                  <th>EST. VALUE</th>
+                  <th>STAGE / STATUS</th>
+                  <th>QUICK ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="crmTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick WhatsApp Pitch Script Generator -->
+      <section class="dash-card" style="margin-bottom: 24px;">
+        <div class="dash-card-header">
+          <div class="card-title-group">
+            <span class="card-icon">💬</span>
+            <div>
+              <h3 class="card-title">1-Click WhatsApp & Email Pitch Generator</h3>
+              <p class="card-subtitle">Generate tailored professional proposals to close deals with students & clients
+                immediately</p>
+            </div>
+          </div>
+        </div>
+        <div class="dash-card-body">
+          <div class="pitch-generator-grid">
+            <div class="form-group">
+              <label class="form-label">Client Name:</label>
+              <input type="text" id="pitchName" class="input-cyber" value="Rahul" placeholder="e.g. Rahul">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Project Domain:</label>
+              <select id="pitchDomain" class="select-cyber">
+                <option value="Digital VLSI">Digital VLSI / Verilog RTL</option>
+                <option value="FPGA Implementation">FPGA Implementation (Vivado / Basys 3)</option>
+                <option value="RISC-V Processor">Custom RISC-V Processor Design</option>
+                <option value="IoT Grid Protection">Vidyut Rakshaka IoT & Grid Protection</option>
+                <option value="Hardware Security">PUF Hardware Authentication</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Quoted Price (₹):</label>
+              <input type="number" id="pitchPrice" class="input-cyber" value="22500">
+            </div>
+          </div>
+
+          <div class="pitch-output-box" id="pitchOutputText">
+            <!-- Injected by JS -->
+          </div>
+
+          <div style="margin-top: 12px; display: flex; gap: 10px;">
+            <button class="btn btn-gold btn-sm" id="btnCopyPitch">
+              <span class="icon">📋</span> Copy Pitch Text for WhatsApp
+            </button>
+            <button class="btn btn-outline btn-sm" id="btnRefreshPitch">
+              <span class="icon">🔄</span> Re-generate Pitch
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Hardware Lab Telemetry & In-House Racks Tracker -->
+      <section class="dash-card">
+        <div class="dash-card-header">
+          <div class="card-title-group">
+            <span class="card-icon">🔬</span>
+            <div>
+              <h3 class="card-title">In-House Hardware Lab Bench Status</h3>
+              <p class="card-subtitle">Active testbeds ready for client demonstrations</p>
+            </div>
+          </div>
+        </div>
+        <div class="dash-card-body">
+          <div class="lab-benches-grid">
+            <!-- Bench 1: Vivado FPGA -->
+            <div class="bench-card">
+              <div class="bench-header">
+                <div>
+                  <h4 class="bench-name">Bench 01: FPGA Synthesis Rack</h4>
+                  <span class="bench-target">Basys 3 & Artix-7 (Vivado 2024.2)</span>
+                </div>
+                <span class="bench-status-active"><span class="pulse-dot"></span> READY</span>
+              </div>
+              <p style="font-size: 11.5px; color: var(--text-secondary); margin-bottom: 8px;">Used for RISC-V 5-stage
+                core & PUF security IP emulation.</p>
+              <button class="btn btn-xs btn-outline" onclick="triggerBenchAction('bench1')">Run Demo Bitstream</button>
+            </div>
+
+            <!-- Bench 2: Vidyut Rakshaka -->
+            <div class="bench-card">
+              <div class="bench-header">
+                <div>
+                  <h4 class="bench-name">Bench 02: Vidyut Rakshaka Rig</h4>
+                  <span class="bench-target">ESP32 + ACS712 + High Voltage Load</span>
+                </div>
+                <span class="bench-status-active"><span class="pulse-dot emerald"></span> ONLINE</span>
+              </div>
+              <p style="font-size: 11.5px; color: var(--text-secondary); margin-bottom: 8px;">Real-time AI relay
+                protection demonstration ready to showcase.</p>
+              <button class="btn btn-xs btn-outline" onclick="tripFault()">Trigger Simulated Fault</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-left">
+        <span class="text-gold">YANTRIKA LABS</span> · <span>From Idea to Silicon</span> · <span>Engineering Ideas Into
+          Hardware</span>
+      </div>
+      <div class="footer-center">
+        <span class="text-cyan">Ancient Ingenuity, Modern Silicon.</span> · <span>DESIGN · SIMULATE · IMPLEMENT ·
+          INNOVATE</span>
+      </div>
+      <div class="footer-right">
+        <span>Custom Project Support · Complete Development · Learn & Build · Academic & Placement Ready</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL 1: PROJECT DOSSIER                                       -->
+  <!-- ============================================================== -->
+  <div class="modal-backdrop" id="projectModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-header-title">
+            <span class="modal-project-id" id="modalProjId">01</span>
+            <h3 class="modal-title" id="modalProjTitle">VIDYUT RAKSHAKA</h3>
+            <span class="modal-domain-tag" id="modalProjDomain">IoT | Smart Grid</span>
+          </div>
+          <button class="modal-close-btn" id="btnCloseProjectModal">&times;</button>
+        </div>
+        <div class="modal-body" id="modalProjBody">
+          <!-- Populated by JS -->
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" id="btnModalClose">Close Dossier</button>
+          <button class="btn btn-gold" id="btnModalHireForSimilar">⚡ Request Similar Project</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL 2: SUBMIT PROJECT IDEA (Customer Lead Generator)          -->
+  <!-- ============================================================== -->
+  <div class="modal-backdrop" id="submitIdeaModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">💡 Submit Your Project Idea to Yantrika Labs</h3>
+          <button class="modal-close-btn" id="btnCloseSubmitIdea">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="submitIdeaForm" class="cyber-form">
+            <div class="form-group">
+              <label class="form-label">Your Name / Team Lead *</label>
+              <input type="text" id="leadName" class="input-cyber" placeholder="e.g. Ananya Rao" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">WhatsApp Number *</label>
+                <input type="text" id="leadPhone" class="input-cyber" placeholder="+91 98765 43210" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">College / Company</label>
+                <input type="text" id="leadCollege" class="input-cyber" placeholder="e.g. RVCE / PES / BMSCE">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Target Discipline</label>
+                <select id="leadDomain" class="select-cyber">
+                  <option value="Digital VLSI">Digital VLSI (Verilog RTL)</option>
+                  <option value="FPGA">FPGA (Vivado / Quartus)</option>
+                  <option value="RISC-V">RISC-V Custom Processor</option>
+                  <option value="IoT">IoT & Smart Grid</option>
+                  <option value="Hardware Security">Hardware Security / PUF</option>
+                  <option value="Embedded">Embedded Hardware & PCB</option>
+                  <option value="Software">Engineering Software & AI</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Estimated Budget</label>
+                <select id="leadBudget" class="select-cyber">
+                  <option value="15000">₹15,000 - ₹25,000 (Standard Capstone)</option>
+                  <option value="30000">₹25,000 - ₹40,000 (FPGA / HW Included)</option>
+                  <option value="50000">₹40,000+ (Research / Commercial Prototype)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Describe Your Idea or Problem Statement</label>
+              <textarea id="leadNotes" class="textarea-cyber" rows="3"
+                placeholder="Tell us what you want to build, any specific IC/FPGA requirements, or submission deadlines..."></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" id="btnCancelSubmitIdea">Cancel</button>
+          <button class="btn btn-gold" id="btnConfirmSubmitIdea">⚡ Submit Project Idea</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL 3: BRAND POSTERS SHOWCASE                                -->
+  <!-- ============================================================== -->
+  <div class="modal-backdrop" id="posterModal">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-header-title">
+            <h3 class="modal-title">YANTRIKA LABS · OFFICIAL BRAND POSTERS</h3>
+            <span class="modal-domain-tag">From Idea to Silicon</span>
+          </div>
+          <button class="modal-close-btn" id="btnClosePosterModal">&times;</button>
+        </div>
+        <div class="modal-body text-center">
+          <div class="poster-toggle-tabs">
+            <button class="poster-tab-btn active" id="tabPoster1Btn">
+              Poster 1: Selected Engineering Projects
+            </button>
+            <button class="poster-tab-btn" id="tabPoster2Btn">
+              Poster 2: Studio Services & Technologies ("Ancient Ingenuity, Modern Silicon")
+            </button>
+          </div>
+
+          <div class="poster-image-frame">
+            <img src="assets/yantrika_poster.jpg" alt="Selected Engineering Projects Poster"
+              class="poster-img-responsive" id="activePosterImg">
+          </div>
+
+          <div class="poster-callout-grid">
+            <div class="callout-card">
+              <h4>🎯 Core Proposition</h4>
+              <p>"YOUR IDEAS. OUR ENGINEERING. REAL HARDWARE." Empowering students & researchers to transform
+                theoretical algorithms into silicon and physical PCBs.</p>
+            </div>
+            <div class="callout-card">
+              <h4>⚡ 6 In-House Innovations</h4>
+              <p>Vidyut Rakshaka, AHB-Like Bus, Custom RISC-V Processor, PUF Hardware Authentication, Smart Attendance,
+                and Engineering Dashboards.</p>
+            </div>
+            <div class="callout-card">
+              <h4>🏛️ Ancient Ingenuity, Modern Silicon</h4>
+              <p>11 Core services from Idea Refinement, RTL, Vivado/Quartus synthesis, to presentation and viva
+                preparation.</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-gold" id="btnClosePosterModal2">Back to Studio</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+
+</html>
